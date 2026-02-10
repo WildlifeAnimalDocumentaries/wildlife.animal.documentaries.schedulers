@@ -65,6 +65,7 @@ jobs:
           sparse-checkout: |
             IPNBY/quality.ipynb
             VIDEO_EDITING_QUALITY
+            AI_MODELS
             counter_video_editing.txt
             video_end_tracker.txt
             requirements.txt
