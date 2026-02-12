@@ -146,6 +146,7 @@ jobs:
           mkdir -p kaggle-dataset
           cp -r REELS kaggle-dataset/ || true
           cp -r VIDEO_EDITING_QUALITY kaggle-dataset/ || true
+          cp -r AI_MODELS kaggle-dataset/ || true
           cp counter_video_editing.txt kaggle-dataset/ || true
           cp video_end_tracker.txt kaggle-dataset/ || true
           cp requirements.txt kaggle-dataset/ || true
