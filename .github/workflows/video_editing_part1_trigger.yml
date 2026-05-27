@@ -116,9 +116,12 @@ jobs:
       # Configure Sparse Checkout for specific video
       - name: Configure Sparse Checkout
         run: |
-          VIDEO_NUMBER="${{ needs.update-counter.outputs.video_number }}"
-          echo "Processing Video_${VIDEO_NUMBER}.mp4"
-          echo "VIDEOS/Video_${VIDEO_NUMBER}.mp4" >> .git/info/sparse-checkout
+          START_VIDEO_NUMBER=$(cat counter_video_editing.txt)
+          END_VIDEO_NUMBER=$(cat video_end_tracker.txt)
+          echo "Processing videos from Video_${START_VIDEO_NUMBER}.mp4 to Video_${END_VIDEO_NUMBER}.mp4"
+          for VIDEO_NUMBER in $(seq "$START_VIDEO_NUMBER" "$END_VIDEO_NUMBER"); do
+            echo "VIDEOS/Video_${VIDEO_NUMBER}.mp4" >> .git/info/sparse-checkout
+          done
           echo "REELS/test.mp4" >> .git/info/sparse-checkout
           git sparse-checkout reapply
 
@@ -148,10 +151,13 @@ jobs:
           cp requirements.txt kaggle-dataset/ || true
           cp IPNBY/quality.ipynb kaggle-dataset/
           
-          # Include the sparse-checked video file
-          VIDEO_NUMBER="${{ needs.update-counter.outputs.video_number }}"
+          # Include the sparse-checked video files
+          START_VIDEO_NUMBER=$(cat counter_video_editing.txt)
+          END_VIDEO_NUMBER=$(cat video_end_tracker.txt)
           mkdir -p kaggle-dataset/VIDEOS
-          cp "VIDEOS/Video_${VIDEO_NUMBER}.mp4" kaggle-dataset/VIDEOS/ || echo "⚠️ Video file not found: VIDEOS/Video_${VIDEO_NUMBER}.mp4"
+          for VIDEO_NUMBER in $(seq "$START_VIDEO_NUMBER" "$END_VIDEO_NUMBER"); do
+            cp "VIDEOS/Video_${VIDEO_NUMBER}.mp4" kaggle-dataset/VIDEOS/ || echo "⚠️ Video file not found: VIDEOS/Video_${VIDEO_NUMBER}.mp4"
+          done
 
           # Kaggle dataset metadata
           KAGGLE_USERNAME="${{ steps.set_kaggle_creds.outputs.kaggle_username }}"
